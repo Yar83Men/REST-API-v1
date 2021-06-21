@@ -31,7 +31,7 @@ def directory_list(request):
         list_of_directories = Directory.objects.filter(date__contains=request.data['date'])
 
         if len(list_of_directories) == 0:
-            return HttpResponse(status=404)
+            return Response(data=f"Нет Справочников на {request.data['date']}", status=status.HTTP_404_NOT_FOUND)
 
         result_page = paginator.paginate_queryset(list_of_directories, request)
         serializer = DirectorySerializer(result_page, many=True)
@@ -49,7 +49,7 @@ def elements_of_directory(request):
     try:
         directory_id = Directory.objects.get(version=request.data['version']).id
     except Directory.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(data=f"Нет Элементов в Справочнике версии {request.data['version']}", status=status.HTTP_404_NOT_FOUND)
 
     list_of_elements = ElementOfDirectory.objects.filter(dictionary=directory_id)
     result_page = paginator.paginate_queryset(list_of_elements, request)
@@ -68,7 +68,7 @@ def elements_current_directory(request):
     try:
         directory_name = Directory.objects.filter(name=request.data['name']).latest('date')
     except Directory.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(data=f"Нет совпадений", status=status.HTTP_404_NOT_FOUND)
 
     list_of_current_dictionary_elements = ElementOfDirectory.objects.filter(dictionary=directory_name.id)
 
