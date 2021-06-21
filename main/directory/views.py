@@ -42,8 +42,10 @@ def directory_list(request):
 # Функция представления списка Элементов Справочника при передаче POST запросом версии Справочника
 # POST запрос содержит json {"version":"Версия"} , url api/directory/elements/
 # Возвращает json - список Элементов Спарвочника указанной версии
-@api_view(['POST'])
+@api_view(['GET','POST'])
 def elements_of_directory(request):
+    if request.method == 'GET':
+        return Response(data='Метод POST {\'version\':\'Версия Справочника\'}')
     try:
         directory_id = Directory.objects.get(version=request.data['version']).id
     except Directory.DoesNotExist:
@@ -59,8 +61,10 @@ def elements_of_directory(request):
 # Функция представления списка Элементов текущего Справочника
 # POST запросом передается имя Справочника {"name":"Имя справочника"}, url api/directory/current/
 # Возвращает json - список Элементов Справочника последней версии (последний по дате)
-@api_view(['POST'])
+@api_view(['GET','POST'])
 def elements_current_directory(request):
+    if request.method == 'GET':
+        return Response(data='Метод POST {\'name\':\'Название Справочника\'}')
     try:
         directory_name = Directory.objects.filter(name=request.data['name']).latest('date')
     except Directory.DoesNotExist:
@@ -77,8 +81,11 @@ def elements_current_directory(request):
 # POST запрос api/directory/validate/ с передачей кода Элемента и версии Справочника
 # JSON {"version":"Версия Справочника", "code":"Код Элемента справочника"}
 # Возвращает json - список Элементов справочника (если они есть в Справочнике) по указанной версии Справочника
-@api_view(['POST'])
+@api_view(['GET','POST'])
 def validate_element(request):
+    if request.method == 'GET':
+        return Response(data='Метод POST {\'version\':\'Версия Справочника\', \'code\':\'Код Элемента справочника\'}')
+
     try:
         directory_id_by_version = Directory.objects.get(version=request.data['version']).id
 
@@ -101,8 +108,10 @@ def validate_element(request):
 # POST запросом на url api/directory/validate/current посылается json
 # {"name":"Имя справочника", "code":"Код эелемента справочника"}
 # Возвращается json объект со списком Элементов (если они есть в Справочнике) с последней датой Справочника
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def validate_current_element(request):
+    if request.method == 'GET':
+        return Response(data='Метод POST {\'name\':\'Имя Cправочника\', \'code\':\'Код Элемента справочника\'}')
     try:
         directory_name_latest = Directory.objects.filter(name=request.data['name']).latest('date')
 
