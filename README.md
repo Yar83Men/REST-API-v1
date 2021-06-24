@@ -1,5 +1,4 @@
-# Test_KOMTEK
-### Test KOMTEK final version API
+# REST API
 ### URLS
 #### api/directory/                   
 GET запрос, выдает json список всех Справочников
